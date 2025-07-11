@@ -1,7 +1,9 @@
 package com.bobocode.dao;
 
 import com.bobocode.model.Photo;
+import com.bobocode.util.EntityManagerUtil;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
@@ -9,15 +11,21 @@ import java.util.List;
  * Please note that you should not use auto-commit mode for your implementation.
  */
 public class PhotoDaoImpl implements PhotoDao {
-    private EntityManagerFactory entityManagerFactory;
+
+    private EntityManagerUtil entityManagerUtil;
 
     public PhotoDaoImpl(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
+        this.entityManagerUtil = new EntityManagerUtil(entityManagerFactory);
     }
 
+    /**
+     * Saves photo into db and sets an id
+     *
+     * @param photo new photo
+     */
     @Override
     public void save(Photo photo) {
-        throw new UnsupportedOperationException("Just do it!"); // todo
+        entityManagerUtil.performWithinTx(em -> em.persist(photo));
     }
 
     @Override
