@@ -2,9 +2,11 @@ package com.bobocode.dao;
 
 import com.bobocode.model.Photo;
 import com.bobocode.util.EntityManagerUtil;
+import org.hibernate.jpa.QueryHints;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.QueryHint;
 import java.util.List;
 
 /**
@@ -39,9 +41,17 @@ public class PhotoDaoImpl implements PhotoDao {
         return entityManagerUtil.performReturningWithinTx(em -> em.find(Photo.class, id));
     }
 
+    public static final String FIND_ALL_PHOTOS_JPQL_QUERY = "SELECT p FROM Photo p";
+    /**
+     * Returns a list of all stored photos
+     *
+     * @return list of stored photos
+     */
     @Override
     public List<Photo> findAll() {
-        throw new UnsupportedOperationException("Just do it!"); // todo
+        return entityManagerUtil.performReturningWithinTx(em -> em.createQuery(FIND_ALL_PHOTOS_JPQL_QUERY, Photo.class)
+                                                                  .setHint(QueryHints.HINT_READONLY, true)
+                                                                  .getResultList());
     }
 
     @Override
