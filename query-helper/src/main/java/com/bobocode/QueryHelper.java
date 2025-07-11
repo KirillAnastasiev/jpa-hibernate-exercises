@@ -12,6 +12,7 @@ import java.util.function.Function;
  * {@link QueryHelper} provides a util method that allows to perform read operations in the scope of transaction
  */
 public class QueryHelper {
+
     private EntityManagerFactory entityManagerFactory;
 
     public QueryHelper(EntityManagerFactory entityManagerFactory) {
@@ -31,6 +32,22 @@ public class QueryHelper {
      * @return query result specified by type T
      */
     public <T> T readWithinTx(Function<EntityManager, T> entityManagerConsumer) {
-        throw new UnsupportedOperationException("I'm waiting for you to do your job and make me work ;)"); // todo:
+        EntityManager em = entityManagerFactory.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            T result = entityManagerConsumer.apply(em);
+
+            Session session = em.unwrap(Session.class);
+            session.setReadOnly(result,true);
+
+            em.getTransaction().commit();
+            return result;
+        } catch (Exception e ) {
+            em.getTransaction().rollback();
+            throw new QueryHelperException("Error performing query. Transaction is rolled back", e);
+        } finally {
+            em.close();
+        }
     }
+
 }
