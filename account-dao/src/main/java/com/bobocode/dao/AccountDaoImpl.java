@@ -55,9 +55,25 @@ public class AccountDaoImpl implements AccountDao {
         }
     }
 
+    public static final String FIND_BY_EMAIL_JPQL_QUERY = "SELECT a FROM Account a WHERE a.email = :email";
+    /**
+     * Returns {@link Account} instance by its email
+     *
+     * @param email account emails
+     * @return account instance
+     */
     @Override
     public Account findByEmail(String email) {
-        throw new UnsupportedOperationException("I don't wanna work without implementation!"); // todo
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery(FIND_BY_EMAIL_JPQL_QUERY, Account.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (Exception e) {
+            throw new AccountDaoException("Error find by email: " + email, e);
+        } finally {
+            em.close();
+        }
     }
 
     @Override
