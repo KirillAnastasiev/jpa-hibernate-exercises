@@ -1,12 +1,14 @@
 package com.bobocode.dao;
 
 import com.bobocode.model.Photo;
+import com.bobocode.model.PhotoComment;
 import com.bobocode.util.EntityManagerUtil;
 import org.hibernate.jpa.QueryHints;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.QueryHint;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -67,8 +69,23 @@ public class PhotoDaoImpl implements PhotoDao {
         });
     }
 
+    /**
+     * Adds a new comment to an existing photo. This method does not require additional SQL select methods to load
+     * {@link Photo}.
+     *
+     * @param photoId
+     * @param comment
+     */
     @Override
     public void addComment(long photoId, String comment) {
-        throw new UnsupportedOperationException("Just do it!"); // todo
+        PhotoComment photoComment = new PhotoComment();
+        photoComment.setText(comment);
+        photoComment.setCreatedOn(LocalDateTime.now());
+
+        entityManagerUtil.performWithinTx(em -> {
+            Photo managedReference = em.getReference(Photo.class, photoId);
+            managedReference.addComment(photoComment);
+            em.persist(photoComment);
+        });
     }
 }
