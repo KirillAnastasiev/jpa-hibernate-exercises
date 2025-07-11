@@ -28,9 +28,15 @@ public class PhotoDaoImpl implements PhotoDao {
         entityManagerUtil.performWithinTx(em -> em.persist(photo));
     }
 
+    /**
+     * Retrieves a photo from the database by its id
+     *
+     * @param id photo id
+     * @return photo instance
+     */
     @Override
     public Photo findById(long id) {
-        throw new UnsupportedOperationException("Just do it!"); // todo
+        return entityManagerUtil.performReturningWithinTx(em -> em.find(Photo.class, id));
     }
 
     @Override
