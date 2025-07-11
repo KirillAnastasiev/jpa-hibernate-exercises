@@ -1,28 +1,32 @@
 package com.bobocode.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * todo:
- * - implement no argument constructor
- * - implement getters and setters
- * - implement equals and hashCode based on identifier field
- *
- * - configure JPA entity
- * - specify table name: "employee"
- * - configure auto generated identifier
- * - configure not nullable columns: email, firstName, lastName
- *
- * - map unidirectional relation between {@link Employee} and {@link EmployeeProfile} on the child side
- */
+import javax.persistence.*;
+
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(of = "id")
+@Entity
+@Table(name = "employee")
 public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "email", nullable = false)
     private String email;
+
+    @Column(name = "firstName", nullable = false)
     private String fistName;
+
+    @Column(name = "lastName", nullable = false)
     private String lastName;
+
 }
