@@ -54,9 +54,17 @@ public class PhotoDaoImpl implements PhotoDao {
                                                                   .getResultList());
     }
 
+    /**
+     * Removes a photo from the database
+     *
+     * @param photo an instance of stored photo
+     */
     @Override
     public void remove(Photo photo) {
-        throw new UnsupportedOperationException("Just do it!"); // todo
+        entityManagerUtil.performWithinTx(em -> {
+            Photo managedReference = em.getReference(Photo.class, photo.getId());
+            em.remove(managedReference);
+        });
     }
 
     @Override
