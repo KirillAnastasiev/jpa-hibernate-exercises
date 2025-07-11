@@ -95,9 +95,26 @@ public class AccountDaoImpl implements AccountDao {
         }
     }
 
+    /**
+     * Receives stored {@link Account} instance and updates it in the database
+     *
+     * @param account stored account with updated fields
+     */
     @Override
     public void update(Account account) {
-        throw new UnsupportedOperationException("I don't wanna work without implementation!"); // todo
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+
+            em.merge(account);
+
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            throw new AccountDaoException("Error update account: " + account, e);
+        } finally {
+            em.close();
+        }
     }
 
     @Override
