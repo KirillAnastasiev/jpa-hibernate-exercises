@@ -37,9 +37,22 @@ public class AccountDaoImpl implements AccountDao {
         }
     }
 
+    /**
+     * Returns an {@link Account} instance by its id
+     *
+     * @param id account id in the database
+     * @return account instance
+     */
     @Override
     public Account findById(Long id) {
-        throw new UnsupportedOperationException("I don't wanna work without implementation!"); // todo
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.find(Account.class, id);
+        } catch (Exception e) {
+            throw new AccountDaoException("Error find by id: " + id, e);
+        } finally {
+            em.close();
+        }
     }
 
     @Override
