@@ -76,9 +76,23 @@ public class AccountDaoImpl implements AccountDao {
         }
     }
 
+    public static final String FIND_ALL_JPQL_QUERY = "SELECT a FROM Account a";
+    /**
+     * Returns all accounts stored in the database.
+     *
+     * @return account list
+     */
     @Override
     public List<Account> findAll() {
-        throw new UnsupportedOperationException("I don't wanna work without implementation!"); // todo
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery(FIND_ALL_JPQL_QUERY, Account.class)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new AccountDaoException("Error find all", e);
+        } finally {
+            em.close();
+        }
     }
 
     @Override
