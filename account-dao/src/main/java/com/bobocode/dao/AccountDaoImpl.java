@@ -119,7 +119,20 @@ public class AccountDaoImpl implements AccountDao {
 
     @Override
     public void remove(Account account) {
-        throw new UnsupportedOperationException("I don't wanna work without implementation!"); // todo
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+
+            Account reference = em.getReference(Account.class, account.getId());
+            em.remove(reference);
+
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            throw new AccountDaoException("Error remove account: " + account, e);
+        } finally {
+            em.close();
+        }
     }
 }
 
